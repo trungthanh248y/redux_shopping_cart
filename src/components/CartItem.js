@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as Mess from '../constants/Message';
 
 class CartItem extends Component {
     render () {
@@ -19,11 +20,15 @@ class CartItem extends Component {
                     <span className="qty">{ item.quantity } </span>
                     <div className="btn-group radio-group" data-toggle="buttons">
                         <label className="btn btn-sm btn-primary
-                            btn-rounded waves-effect waves-light">
+                            btn-rounded waves-effect waves-light"
+                            onClick={ () => this.onUpdateQuantity(item.product, item.quantity - 1) }
+                        >
                             <a>—</a>
                         </label>
                         <label className="btn btn-sm btn-primary
-                            btn-rounded waves-effect waves-light">
+                            btn-rounded waves-effect waves-light"
+                            onClick={ () => this.onUpdateQuantity(item.product, item.quantity + 1) }
+                        >
                             <a>+</a>
                         </label>
                     </div>
@@ -31,12 +36,26 @@ class CartItem extends Component {
                 <td>{this.showSubTotal(item.product.price, item.quantity)}$</td>
                 <td>
                     <button type="button" className="btn btn-sm btn-primary waves-effect waves-light" data-toggle="tooltip" data-placement="top"
-                        title="" data-original-title="Remove item">
+                        title="" data-original-title="Remove item"
+                        onClick = {() => this.onDeleteCart(item.product)}
+                    >
                         X
                     </button>
                 </td>
             </tr>
         );
+    }
+
+    onUpdateQuantity = (product, quantity) => {
+        if(quantity > 0) {
+            this.props.onUpdateProductInCart(product, quantity);
+            this.props.onChangeMessage(Mess.MSG_UPDATE_CART_SUCCESS);
+        }
+    }
+
+    onDeleteCart = (product) => {
+        this.props.onDeleteProductInCart(product);
+        this.props.onChangeMessage(Mess.MSG_DELETE_PRODUCT_IN_CART_SUCCESS);
     }
 
     showSubTotal = (price, quantity) => {

@@ -5,6 +5,7 @@ import Cart from '../components/Cart';
 import * as Message from '../constants/Message';
 import CartItem from '../components/CartItem';
 import CartResult from '../components/CartResult';
+import * as action from '../actions/index';
 
 class CartContainer extends Component {
     render () {
@@ -18,7 +19,9 @@ class CartContainer extends Component {
     }
 
     showCartItem = (cart) => {
-        var result = Message.MSG_EMPTY;
+        var result = <tr>
+            <td>{Message.MSG_EMPTY}</td>
+        </tr>;
         if(cart.length > 0) {
             result = cart.map((item, index) => {
                 return (
@@ -26,6 +29,9 @@ class CartContainer extends Component {
                         key={ index }
                         item={item}
                         index={index}
+                        onDeleteProductInCart = { this.props.onDeleteProductInCart }
+                        onChangeMessage = { this.props.onChangeMessage }
+                        onUpdateProductInCart = { this.props.onUpdateProductInCart }
                     />
                 )
             })
@@ -54,7 +60,10 @@ CartContainer.propTypes = {
             rating: PropTypes.number.isRequired
         }).isRequired,
         quantity: PropTypes.number.isRequired,
-    })).isRequired//isRequired bắt buộc phải có, PropTypes.arrayOf check nó là một array
+    })).isRequired,//isRequired bắt buộc phải có, PropTypes.arrayOf check nó là một array
+    onDeleteProductInCart: PropTypes.func.isRequired,
+    onChangeMessage: PropTypes.func.isRequired,
+    onUpdateProductInCart: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => {
@@ -63,4 +72,18 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(CartContainer);
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        onDeleteProductInCart: (product) => {
+            dispatch(action.actDeleteProductInCart(product));
+        },
+        onChangeMessage: (mess) => {
+            dispatch(action.actChangeMessage(mess));
+        },
+        onUpdateProductInCart: (product, quantity) => {
+            dispatch(action.actUpdateProductInCart(product, quantity));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CartContainer);

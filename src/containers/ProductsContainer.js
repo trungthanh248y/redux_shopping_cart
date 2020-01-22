@@ -16,13 +16,14 @@ class ProductsContainer extends Component {
     }
     showProducts(products) {
         var result = null;
-        var { onAddToCart } = this.props;
+        var { onAddToCart, onChangeMessage } = this.props;
         if(products.length > 0) {
             result = products.map((product, index) => {
                 return <Product 
                             key={index} 
                             product={product}
                             onAddToCart = {onAddToCart}
+                            onChangeMessage = {onChangeMessage}
                         />
             });
         }
@@ -41,7 +42,9 @@ ProductsContainer.propTypes = {
             inventory: PropTypes.number.isRequired,
             rating: PropTypes.number.isRequired
         })
-    ).isRequired//isRequired bắt buộc phải có, PropTypes.arrayOf check nó là một array
+    ).isRequired,//isRequired bắt buộc phải có, PropTypes.arrayOf check nó là một array
+    onAddToCart : PropTypes.func.isRequired,
+    onChangeMessage : PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => {
@@ -54,6 +57,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         onAddToCart : (product) => {
             dispatch(action.actAddToCart(product, 1));
+        },
+        onChangeMessage : (message) => {
+            dispatch(action.actChangeMessage(message));
         }
     }
 }
